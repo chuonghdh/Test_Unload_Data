@@ -1,30 +1,33 @@
 import streamlit as st
 import pandas as pd
+import os
+
+# File path for the CSV in the Streamlit environment
+local_file_path = 'local_data.csv'
 
 # Load CSV data
 def load_data(file_path):
-    try:
+    if os.path.exists(file_path):
         df = pd.read_csv(file_path)
-        return df
-    except FileNotFoundError:
-        st.warning("File not found. Please check the file path.")
-        return pd.DataFrame()  # Return an empty DataFrame if file not found
-    except pd.errors.EmptyDataError:
-        st.warning("File is empty. Please provide a valid CSV file.")
-        return pd.DataFrame()  # Return an empty DataFrame if file is empty
-    except Exception as e:
-        st.warning(f"An error occurred while loading the file: {e}")
-        return pd.DataFrame()  # Return an empty DataFrame if another error occurs
+        st.info("Data loaded from local storage.")
+    else:
+        # Initial load from a repository, as a fallback (if needed)
+        df = pd.read_csv('Data/UserData.csv')  # Replace with your default CSV
+        df.to_csv(file_path, index=False)  # Save to local environment
+        st.info("Data loaded from repository and saved to local storage.")
+    return df
+
+# Save data back to CSV
+def save_data(df, file_path):
+    df.to_csv(file_path, index=False)
+    st.success("Data saved successfully!")
 
 # Main Streamlit app
 def main():
-    st.title("Editable CSV Data Grid - ig")
+    st.title("Editable CSV Data Grid")
 
-    # Specify the file path
-    file_path = 'Data/UserData.csv'  # Change this to your actual file path
-
-    # Load the data
-    df = load_data(file_path)
+    # Load the data (from local storage or repository)
+    df = load_data(local_file_path)
 
     # Check if DataFrame is empty
     if df.empty:
@@ -36,8 +39,7 @@ def main():
 
     # If changes were made, update the data
     if st.button('Update Data'):
-        edited_df.to_csv(file_path, index=False)
-        st.success("Data updated successfully!")
+        save_data(edited_df, local_file_path)
 
 if __name__ == "__main__":
     main()

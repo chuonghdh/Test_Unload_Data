@@ -18,7 +18,7 @@ def load_data(file_path):
 
 # Main Streamlit app
 def main():
-    st.title("Editable CSV Data Grid")
+    st.title("Editable CSV Data Grid - ignore")
 
     # Specify the file path
     file_path = 'Data/UserData.csv'  # Change this to your actual file path

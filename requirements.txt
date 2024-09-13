@@ -2,4 +2,4 @@ streamlit
 pandas
 numpy
 streamlit_js_eval
-streamlit.components.v1
+#streamlit.components.v1
